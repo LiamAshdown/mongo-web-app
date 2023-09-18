@@ -2,9 +2,10 @@
 
 import { TbStar } from 'react-icons/tb'
 import { MdEdit } from 'react-icons/md'
+import { AiFillExclamationCircle } from 'react-icons/ai'
 
-import { useDispatch } from 'react-redux'
-import { setSavedConnections, setRecentConnections, setSelectedConnection } from '@/app/store/slices/connection'
+import { useDispatch, useSelector } from 'react-redux'
+import { setSavedConnections, setRecentConnections, setSelectedConnection, testConnection, getIsLoading, getError } from '@/app/store/slices/connection'
 
 import { useState } from 'react'
 
@@ -16,6 +17,7 @@ import SaveFavorite from '@/app/components/client/modals/save-favorite'
 const Connection = () => {
   const [enableConnectionString, setEnableConnectionString] = useState(true)
   const [showFavoriteModal, setShowFavoriteModal] = useState(false)
+  const error = useSelector(getError)
 
   const [connectionString, setConnectionString] = useState('mongodb://localhost:27017')
   const dispatch = useDispatch()
@@ -34,16 +36,12 @@ const Connection = () => {
     setShowFavoriteModal(false)
   }
 
-  const onConnect = () => {
-    dispatch(setRecentConnections({
-      name: 'Localhost',
-      connectionString: connectionString
-    }))
+  const onConnect = async () => {
+    const response = await dispatch(testConnection(connectionString))
 
-    dispatch(setSelectedConnection({
-      name: 'Localhost',
-      connectionString: connectionString
-    }))
+    if (response.error) {
+      return
+    }
   }
 
   return (
@@ -92,6 +90,16 @@ const Connection = () => {
             />
           </div>
         </div>
+        {error && (
+          <div className="mt-2">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+              <div className="font-semibold flex items-center">
+                <AiFillExclamationCircle size={20} className="mr-2" />
+                <span>{error}</span>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="mt-4 flex justify-between items-center">
           <div>
             <Button variant='white'>Save</Button>

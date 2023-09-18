@@ -3,7 +3,7 @@
 import classNames from "classnames"
 import { useEffect, useRef } from "react"
 
-const Button = ({ variant = 'primary', size = 'default', block, ripple = false, onClick = null, children }) => {
+const Button = ({ variant = 'primary', size = 'default', block, ripple = false, onClick = null, Icon = null, children }) => {
   const getVariant = () => {
     let style = []
     switch (variant) {
@@ -77,7 +77,14 @@ const Button = ({ variant = 'primary', size = 'default', block, ripple = false, 
       ref={ref}
       onClick={onClick}
     >
-      {children}
+      {Icon && (
+        <div className="flex items-center justify-center gap-1">
+          {Icon}
+          {children}
+        </div>
+      )}
+
+      {!Icon && children}
     </button>
   )
 }

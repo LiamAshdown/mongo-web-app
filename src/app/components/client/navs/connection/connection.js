@@ -1,6 +1,10 @@
+'use client'
+
 import { BiPlus, BiSolidCog } from 'react-icons/bi'
 import { TbStar } from 'react-icons/tb'
+import { GrConnectivity } from 'react-icons/gr'
 import Button from '@/app/components/client/inputs/button'
+import Item from './item'
 
 const Connection = () => {
   return (
@@ -29,6 +33,22 @@ const Connection = () => {
             <TbStar size={18} className="mr-2" />
             <span>Saved Connections</span>
           </h3>
+          <div className="mt-2 pl-2 space-y-2">
+            <Item />
+            <Item />
+            <Item />
+          </div>
+        </div>
+        <div className="mt-4">
+          <h3 className="text-black text-md font-medium flex items-center">
+            <GrConnectivity size={18} className="mr-2" />
+            <span>Recents</span>
+          </h3>
+          <div className="mt-2 pl-2 space-y-2">
+            <Item />
+            <Item />
+            <Item />
+          </div>
         </div>
       </div>
     </div>

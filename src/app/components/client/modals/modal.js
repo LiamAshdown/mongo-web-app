@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import Button from '@/app/components/client/inputs/button'
 
-const Modal = ({ show = false, title, size = 'xl', children, onClose = null }) => {
+const Modal = ({ show = false, title, size = 'xl', children, onClose = null, onAction = null }) => {
   return (
     <div id="medium-modal" tabIndex="-1"
       className={classNames("fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex justify-center bg-black bg-opacity-50 transition-all duration-300 ease-in-out", {
@@ -30,7 +30,7 @@ const Modal = ({ show = false, title, size = 'xl', children, onClose = null }) =
           </div>
           <div className="flex items-center justify-end p-6 space-x-2 border-t border-gray-200 rounded-b">
             <Button variant="white" onClick={onClose}>Cancel</Button>
-            <Button variant="white">Save</Button>
+            <Button variant="white" onClick={onAction}>Save</Button>
           </div>
         </div>
       </div>

@@ -1,17 +1,50 @@
 'use client'
 
+import { TbStar } from 'react-icons/tb'
+import { MdEdit } from 'react-icons/md'
+
+import { useDispatch } from 'react-redux'
+import { setSavedConnections, setRecentConnections, setSelectedConnection } from '@/app/store/slices/connection'
+
+import { useState } from 'react'
+
 import Toggle from '@/app/components/client/inputs/toggle'
 import TextArea from '@/app/components/client/inputs/textarea'
 import Button from '@/app/components/client/inputs/button'
 import SaveFavorite from '@/app/components/client/modals/save-favorite'
-import { TbStar } from 'react-icons/tb'
-import { MdEdit } from 'react-icons/md'
-
-import { useState } from 'react'
 
 const Connection = () => {
   const [enableConnectionString, setEnableConnectionString] = useState(true)
   const [showFavoriteModal, setShowFavoriteModal] = useState(false)
+
+  const [connectionString, setConnectionString] = useState('mongodb://localhost:27017')
+  const dispatch = useDispatch()
+
+  const onSaveConnection = (data) => {
+    const savedData = {
+      name: data.name,
+      color: data.color,
+      connectionString: connectionString
+    }
+
+    dispatch(setSavedConnections(savedData))
+    dispatch(setSelectedConnection(savedData))
+    dispatch(setRecentConnections(savedData))
+
+    setShowFavoriteModal(false)
+  }
+
+  const onConnect = () => {
+    dispatch(setRecentConnections({
+      name: 'Localhost',
+      connectionString: connectionString
+    }))
+
+    dispatch(setSelectedConnection({
+      name: 'Localhost',
+      connectionString: connectionString
+    }))
+  }
 
   return (
     <div>
@@ -52,7 +85,11 @@ const Connection = () => {
             </div>
           </div>
           <div>
-            <TextArea disable={!enableConnectionString} />
+            <TextArea
+              disable={!enableConnectionString}
+              value={connectionString}
+              onChange={(e) => setConnectionString(e.target.value)}
+            />
           </div>
         </div>
         <div className="mt-4 flex justify-between items-center">
@@ -60,12 +97,12 @@ const Connection = () => {
             <Button variant='white'>Save</Button>
           </div>
           <div className="flex gap-2">
-            <Button variant='outline-primary'>Save & Connect</Button>
-            <Button variant='primary'>Connect</Button>
+            <Button variant='outline-primary' onClick={() => setShowFavoriteModal(true)}>Save & Connect</Button>
+            <Button variant='primary' onClick={() => onConnect()}>Connect</Button>
           </div>
         </div>
       </div>
-      <SaveFavorite show={showFavoriteModal} onClose={() => setShowFavoriteModal(false)} />
+      <SaveFavorite show={showFavoriteModal} onClose={() => setShowFavoriteModal(false)} onSave={onSaveConnection} />
     </div>
   )
 }

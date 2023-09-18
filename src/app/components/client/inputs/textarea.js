@@ -1,6 +1,6 @@
 import classNames from "classnames"
 
-const TextArea = ({ rows = '2', disable }) => {
+const TextArea = ({ value, onChange, rows = '2', disable }) => {
   return (
     <textarea
       className={classNames(`
@@ -13,6 +13,8 @@ const TextArea = ({ rows = '2', disable }) => {
         transition-all duration-400 ease-in-out
       `
       )}
+      value={value}
+      onChange={onChange}
       rows={rows}
       disabled={disable}
     />

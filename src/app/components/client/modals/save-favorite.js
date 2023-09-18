@@ -8,7 +8,7 @@ import { FiSlash } from 'react-icons/fi'
 import { BsCheck } from 'react-icons/bs'
 import { useState } from 'react'
 
-const SaveFavorite = ({ show, onClose }) => {
+const SaveFavorite = ({ show, onClose, onSave }) => {
   const colors = [
     'none',
     'bg-red-500',
@@ -36,8 +36,15 @@ const SaveFavorite = ({ show, onClose }) => {
     </div>
   }
 
+  const onSaveHandler = () => {
+    onSave({
+      name: connectionName,
+      color: selectedColor
+    })
+  }
+
   return (
-    <Modal title="Save Connection to favorites" size='lg' show={show} onClose={onClose}>
+    <Modal title="Save Connection to favorites" size='lg' show={show} onClose={onClose} onAction={onSaveHandler}>
       <FormGroup label="Connection Name">
         <Input
           placeholder="Connection Name"

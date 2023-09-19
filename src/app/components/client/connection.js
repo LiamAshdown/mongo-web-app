@@ -5,9 +5,9 @@ import { MdEdit } from 'react-icons/md'
 import { AiFillExclamationCircle } from 'react-icons/ai'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { setSavedConnections, setRecentConnections, setSelectedConnection, testConnection, getIsLoading, getError } from '@/app/store/slices/connection'
+import { setSavedConnections, setRecentConnections, setSelectedConnection, testConnection, getIsLoading, getError, getSelectedConnection, updateSelectedConnection } from '@/app/store/slices/connection'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Toggle from '@/app/components/client/inputs/toggle'
 import TextArea from '@/app/components/client/inputs/textarea'
@@ -18,19 +18,22 @@ const Connection = () => {
   const [enableConnectionString, setEnableConnectionString] = useState(true)
   const [showFavoriteModal, setShowFavoriteModal] = useState(false)
   const error = useSelector(getError)
+  const loading = useSelector(getIsLoading)
 
-  const [connectionString, setConnectionString] = useState('mongodb://localhost:27017')
+  const selectedConnection = useSelector(getSelectedConnection)
   const dispatch = useDispatch()
 
   const onSaveConnection = (data) => {
     const savedData = {
+      id: Math.random().toString(36).substr(2, 9),
+      connectionString: connectionString,
       name: data.name,
       color: data.color,
-      connectionString: connectionString
+      date: null,
     }
 
-    dispatch(setSavedConnections(savedData))
     dispatch(setSelectedConnection(savedData))
+    dispatch(setSavedConnections(savedData))
     dispatch(setRecentConnections(savedData))
 
     setShowFavoriteModal(false)
@@ -42,6 +45,13 @@ const Connection = () => {
     if (response.error) {
       return
     }
+  }
+
+  const onUpdateConnection = (connectionString) => {
+    dispatch(updateSelectedConnection({
+      ...selectedConnection,
+      connectionString: connectionString
+    }))
   }
 
   return (
@@ -85,8 +95,8 @@ const Connection = () => {
           <div>
             <TextArea
               disable={!enableConnectionString}
-              value={connectionString}
-              onChange={(e) => setConnectionString(e.target.value)}
+              value={selectedConnection.connectionString}
+              onChange={(e) => onUpdateConnection(e.target.value)}
             />
           </div>
         </div>
@@ -106,7 +116,7 @@ const Connection = () => {
           </div>
           <div className="flex gap-2">
             <Button variant='outline-primary' onClick={() => setShowFavoriteModal(true)}>Save & Connect</Button>
-            <Button variant='primary' onClick={() => onConnect()}>Connect</Button>
+            <Button variant='primary' loading={loading} onClick={() => onConnect()}>Connect</Button>
           </div>
         </div>
       </div>

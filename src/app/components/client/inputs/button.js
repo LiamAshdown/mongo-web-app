@@ -1,9 +1,10 @@
 'use client'
 
-import classNames from "classnames"
+import classNames from 'classnames'
 import { useEffect, useRef } from "react"
+import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
-const Button = ({ variant = 'primary', size = 'default', block, ripple = false, onClick = null, Icon = null, children }) => {
+const Button = ({ variant = 'primary', size = 'default', block, ripple = false, onClick = null, Icon = null, loading = false, children }) => {
   const getVariant = () => {
     let style = []
     switch (variant) {
@@ -31,6 +32,14 @@ const Button = ({ variant = 'primary', size = 'default', block, ripple = false, 
       case 'small':
         return 'px-2 py-1 text-xs'
     }
+  }
+
+  const getLoading = () => {
+    if (loading) {
+      return 'opacity-50 pointer-events-none'
+    }
+
+    return ''
   }
 
   const ref = useRef(null)
@@ -72,18 +81,22 @@ const Button = ({ variant = 'primary', size = 'default', block, ripple = false, 
       getSize(),
       {
         'w-full': block
-      }
+      },
+      getLoading()
     )}
       ref={ref}
       onClick={onClick}
     >
-      {Icon && (
+      {(Icon && !loading) && (
         <div className="flex items-center justify-center gap-1">
           {Icon}
           {children}
         </div>
       )}
 
+      {loading && (
+        <AiOutlineLoading3Quarters size={18} className="animate-spin inline mr-2" />
+      )}
       {!Icon && children}
     </button>
   )

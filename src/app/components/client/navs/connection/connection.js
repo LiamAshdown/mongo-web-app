@@ -5,8 +5,12 @@ import { TbStar } from 'react-icons/tb'
 import { GrConnectivity } from 'react-icons/gr'
 import Button from '@/app/components/client/inputs/button'
 import Item from './item'
+import { selectAllSavedConnections } from '@/app/store/slices/connection'
+import { useSelector } from 'react-redux'
 
 const Connection = () => {
+  const savedConnections = useSelector(selectAllSavedConnections)
+
   return (
     <div className="h-screen">
       <div className="bg-green-800 text-white p-4">
@@ -33,10 +37,10 @@ const Connection = () => {
             <TbStar size={18} className="mr-2" />
             <span>Saved Connections</span>
           </h3>
-          <div className="mt-2 pl-2 space-y-2">
-            <Item />
-            <Item />
-            <Item />
+          <div className="mt-2 space-y-2">
+            {savedConnections.map((item, index) => (
+              <Item key={index} name={item.name} date={item.date} color={item.color} />
+            ))}
           </div>
         </div>
         <div className="mt-4">

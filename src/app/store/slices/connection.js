@@ -31,19 +31,50 @@ const slice = createSlice({
     isLoading: false,
     error: null,
     selectedConnection: {
-      id: null,
-      connectionString: '',
-      name: null,
+      id: generateId(),
+      connectionString: 'mongodb://localhost:27017',
+      canEditConnectionString: true,
+      name: '',
       color: null,
       date: null,
+      favorite: false,
     }
   },
   reducers: {
+    setNewConnection: (state) => {
+      state.selectedConnection = {
+        id: generateId(),
+        connectionString: 'mongodb://localhost:27017',
+        canEditConnectionString: true,
+        name: '',
+        color: null,
+        date: null,
+        favorite: false,
+      }
+    },
     setSavedConnections: (state, action) => {
-      state.savedConnections.push(action.payload)
+      // Check if the connection already exists
+      const savedConnectionIndex = state.savedConnections.findIndex((connection) => connection.id === action.payload.id)
+
+      if (savedConnectionIndex !== -1) {
+        state.savedConnections[savedConnectionIndex] = action.payload
+        return
+      }
+
+      // Add the connection to the top of the list
+      state.savedConnections.unshift(action.payload)
     },
     setRecentConnections: (state, action) => {
-      state.recentConnections.push(action.payload)
+      // Check if the connection already exists
+      const recentConnectionIndex = state.recentConnections.findIndex((connection) => connection.id === action.payload.id)
+
+      if (recentConnectionIndex !== -1) {
+        state.recentConnections[recentConnectionIndex] = action.payload
+        return
+      }
+
+      // Add the connection to the top of the list
+      state.recentConnections.unshift(action.payload)
     },
     setSelectedConnection: (state, action) => {
       // Validate the payload
@@ -58,9 +89,11 @@ const slice = createSlice({
         action.payload = {
           id: generateId(),
           connectionString: action.payload.connectionString,
+          canEditConnectionString: true,
           name: action.payload.name || 'localhost',
           color: action.payload.color || null,
           date: action.payload.date || null,
+          favorite: action.payload.favorite || false,
         }
       }
 
@@ -69,19 +102,8 @@ const slice = createSlice({
         ...action.payload
       }
 
-      // Update the saved connections
-      const savedConnectionIndex = state.savedConnections.findIndex((connection) => connection.id === state.selectedConnection.id)
-
-      if (savedConnectionIndex !== -1) {
-        state.savedConnections[savedConnectionIndex] = state.selectedConnection
-      }
-
-      // Update the recent connections
-      const recentConnectionIndex = state.recentConnections.findIndex((connection) => connection.id === state.selectedConnection.id)
-
-      if (recentConnectionIndex !== -1) {
-        state.recentConnections[recentConnectionIndex] = state.selectedConnection
-      }
+      setSavedConnections(state, state.selectedConnection)
+      setRecentConnections(state, state.selectedConnection)
     }
   },
   extraReducers: (builder) => {
@@ -107,6 +129,6 @@ export const getSelectedConnection = (state) => state.persistedReducer.connectio
 export const getIsLoading = (state) => state.persistedReducer.connection.isLoading
 export const getError = (state) => state.persistedReducer.connection.error
 
-export const { setSavedConnections, setRecentConnections, setSelectedConnection, updateSelectedConnection } = slice.actions
+export const { setSavedConnections, setRecentConnections, setSelectedConnection, updateSelectedConnection, setNewConnection } = slice.actions
 
 export default slice.reducer

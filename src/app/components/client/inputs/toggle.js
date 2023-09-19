@@ -1,6 +1,6 @@
 import classNames from "classnames"
 
-const Toggle = ({ label, labelDirection = 'left', size = 'default', onChange }) => {
+const Toggle = ({ label, labelDirection = 'left', size = 'default', value, onChange }) => {
   const getSize = () => {
     if (size === 'small') {
       return 'w-9 h-5 after:h-4 after:w-4'
@@ -46,7 +46,7 @@ const Toggle = ({ label, labelDirection = 'left', size = 'default', onChange }) 
         getLabel()
       )}
 
-      <input type="checkbox" value="" className="sr-only peer" onChange={onChange} />
+      <input type="checkbox" value="" className="sr-only peer" onChange={onChange} checked={value} />
       <div
         className={classNames("bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:transition-all peer-checked:bg-blue-600",
           getSize(),

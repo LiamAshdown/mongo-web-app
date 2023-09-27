@@ -8,11 +8,11 @@ export async function GET(request) {
     // Test the connection
     const client = await initialiseClient(searchParams.get('connectionString'), true)
     await client.db('admin').command({ ping: 1 })
+
+    return NextResponse.json({
+      connectionString: searchParams.get('connectionString')
+    })
   } catch (error) {
     return NextResponse.error(error)
   }
-
-  return NextResponse.json({
-    connectionString: searchParams.get('connectionString')
-  })
 }

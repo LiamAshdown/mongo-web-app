@@ -27,6 +27,7 @@ const slice = createSlice({
   name: 'database',
   initialState: {
     selectedDatabase: null,
+    showCreateDatabaseModal: false,
     databases: [],
     isLoading: false,
     error: null
@@ -34,6 +35,9 @@ const slice = createSlice({
   reducers: {
     selectDatabase: (state, action) => {
       state.selectedDatabase = action.payload
+    },
+    showCreateDatabaseModal: (state) => {
+      state.showCreateDatabaseModal = !state.showCreateDatabaseModal
     }
   },
   extraReducers: (builder) => {
@@ -52,6 +56,11 @@ const slice = createSlice({
   }
 })
 
-export const { selectDatabase } = slice.actions
+export const getDatabases = (state) => state.persistedReducer.database.databases
+export const getSelectedDatabase = (state) => state.persistedReducer.database.selectedDatabase
+export const isLoading = (state) => state.persistedReducer.database.isLoading
+export const showDatabaseCreateModal = (state) => state.persistedReducer.database.showCreateDatabaseModal
+
+export const { selectDatabase, showCreateDatabaseModal } = slice.actions
 
 export default slice.reducer

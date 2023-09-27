@@ -56,6 +56,7 @@ const Button = ({ variant = 'primary', size = 'default', block, ripple = false, 
         circle.style.left = `${event.clientX - (btn.offsetLeft + radius)}px`
         circle.style.top = `${event.clientY - (btn.offsetTop + radius)}px`
         circle.classList.add('ripple')
+        circle.classList.add(`ripple-${variant}`)
 
         const ripple = btn.getElementsByClassName('ripple')[0]
 
@@ -72,7 +73,7 @@ const Button = ({ variant = 'primary', size = 'default', block, ripple = false, 
         btn.removeEventListener('click', createRipple)
       }
     }
-  }, [ripple])
+  }, [ripple, variant])
 
   return (
     <button className={classNames(

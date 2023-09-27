@@ -5,11 +5,12 @@ import { TbStar } from 'react-icons/tb'
 import { GrConnectivity } from 'react-icons/gr'
 import Button from '@/app/components/client/inputs/button'
 import Item from './item'
-import { selectAllSavedConnections, setNewConnection, setSelectedConnection } from '@/app/store/slices/connection'
+import { selectAllRecentConnections, selectAllSavedConnections, setNewConnection, setSelectedConnection } from '@/app/store/slices/connection'
 import { useDispatch, useSelector } from 'react-redux'
 
 const Connection = () => {
   const savedConnections = useSelector(selectAllSavedConnections)
+  const recentConnections = useSelector(selectAllRecentConnections)
   const dispatch = useDispatch()
 
   const onNewConnection = () => {
@@ -57,6 +58,11 @@ const Connection = () => {
                 onClick={() => onSelectConnection(item)}
               />
             ))}
+            {savedConnections.length === 0 && (
+              <div className="text-gray-500 text-sm ml-2">
+                No saved connections
+              </div>
+            )}
           </div>
         </div>
         <div className="mt-4">
@@ -65,9 +71,19 @@ const Connection = () => {
             <span>Recents</span>
           </h3>
           <div className="mt-2 pl-2 space-y-2">
-            <Item />
-            <Item />
-            <Item />
+            {recentConnections.map((item, index) => (
+              <Item
+                key={index}
+                name={item.name}
+                date={item.date}
+                onClick={() => onSelectConnection(item)}
+              />
+            ))}
+            {recentConnections.length === 0 && (
+              <div className="text-gray-500 text-sm">
+                No recent connections
+              </div>
+            )}
           </div>
         </div>
       </div>

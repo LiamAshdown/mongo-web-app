@@ -38,6 +38,7 @@ const SaveFavorite = ({ show, onClose, onSave }) => {
   const [selectedColor, setSelectedColor] = useState('none')
   const [connectionName, setConnectionName] = useState('')
   const [title, setTitle] = useState('Save Connection to favorites')
+  const [error, setError] = useState({})
 
   const selectedConnection = useSelector(getSelectedConnection)
 
@@ -52,6 +53,8 @@ const SaveFavorite = ({ show, onClose, onSave }) => {
       setConnectionName('')
       setTitle('Save Connection to favorites')
     }
+
+    setError({})
   }, [show, selectedConnection])
 
   const RenderColor = ({ color }) => {
@@ -70,6 +73,21 @@ const SaveFavorite = ({ show, onClose, onSave }) => {
   }
 
   const onSaveHandler = () => {
+
+    if (!connectionName) {
+      setError({
+        name: 'Connection name is required'
+      })
+      return
+    }
+
+    if (connectionName.length > 50 || connectionName.length < 3) {
+      setError({
+        name: 'Connection name must be between 3 and 50 characters'
+      })
+      return
+    }
+
     onSave({
       name: connectionName,
       color: selectedColor
@@ -83,6 +101,7 @@ const SaveFavorite = ({ show, onClose, onSave }) => {
           placeholder="Connection Name"
           onChange={(e) => setConnectionName(e.target.value)}
           value={connectionName}
+          error={error.name}
         />
       </FormGroup>
       <div className="mt-2 flex items-center">

@@ -14,12 +14,14 @@ import TextArea from '@/app/components/client/inputs/textarea'
 import Button from '@/app/components/client/inputs/button'
 import SaveFavorite from '@/app/components/client/modals/save-favorite'
 import classNames from 'classnames'
+import { useRouter } from 'next/navigation'
 
 const Connection = () => {
   const error = useSelector(getError)
   const loading = useSelector(getIsLoading)
   const selectedConnection = useSelector(getSelectedConnection)
   const dispatch = useDispatch()
+  const router = useRouter()
 
   const [showFavoriteModal, setShowFavoriteModal] = useState(false)
 
@@ -33,7 +35,6 @@ const Connection = () => {
 
     dispatch(updateSelectedConnection(savedData))
     dispatch(setSavedConnections(savedData))
-    dispatch(setRecentConnections(savedData))
 
     setShowFavoriteModal(false)
   }
@@ -51,6 +52,34 @@ const Connection = () => {
     if (response.error) {
       return
     }
+
+    let connection = {
+      ...selectedConnection,
+      date: new Date().toISOString()
+    }
+
+    if (!selectedConnection.favorite) {
+      // For the name try and grab the IP and port and use as name
+      const regex = /mongodb:\/\/(.*):(\d+)/gm
+      const match = regex.exec(selectedConnection.connectionString)
+
+      if (match) {
+        connection.name = match[1] + ':' + match[2]
+      } else {
+        connection.name = 'localhost'
+      }
+    }
+
+    await dispatch(updateSelectedConnection(connection))
+
+    // If it is a favorite, then update the saved connection
+    if (selectedConnection.favorite) {
+      await dispatch(setSavedConnections(connection))
+    }
+
+    await dispatch(setRecentConnections(connection))
+
+    router.push('/main/databases')
   }
 
   const onUpdateConnection = (connectionString) => {
@@ -126,7 +155,7 @@ const Connection = () => {
           </div>
           <div className="flex gap-2">
             <Button variant='outline-primary' onClick={() => setShowFavoriteModal(true)}>Save & Connect</Button>
-            <Button variant='primary' loading={loading} onClick={() => onConnect()}>Connect</Button>
+            <Button variant='primary' loading={loading} onClick={() => onConnect()} ripple>Connect</Button>
           </div>
         </div>
       </div>

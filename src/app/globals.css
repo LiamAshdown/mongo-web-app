@@ -10,6 +10,10 @@
   @apply bg-gray-300;
 }
 
+.ripple-primary {
+  @apply bg-green-700;
+}
+
 @keyframes ripple {
   to {
     transform: scale(4);

@@ -51,6 +51,10 @@ const slice = createSlice({
         date: null,
         favorite: false,
       }
+
+      // Reset the error
+      state.error = null
+      state.isLoading = false
     },
     setSavedConnections: (state, action) => {
       // Check if the connection already exists

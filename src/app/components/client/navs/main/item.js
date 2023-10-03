@@ -1,6 +1,6 @@
 import { BiServer } from 'react-icons/bi'
 
-const Item = () => {
+const Item = ({ Icon, children }) => {
   return (
     <div>
       <div className="flex items-center">

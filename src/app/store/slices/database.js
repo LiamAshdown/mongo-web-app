@@ -13,6 +13,8 @@ export const attachDatabases = createAsyncThunk(
       }
     })
 
+    console.log(response)
+
     if (!response.ok) {
       throw new Error(`API call to /api/databases failed with status ${response.status}`)
     }
@@ -28,7 +30,9 @@ const slice = createSlice({
   initialState: {
     selectedDatabase: null,
     showCreateDatabaseModal: false,
-    databases: [],
+    databases: {
+      databases: []
+    },
     isLoading: false,
     error: null
   },
@@ -36,7 +40,7 @@ const slice = createSlice({
     selectDatabase: (state, action) => {
       state.selectedDatabase = action.payload
     },
-    showCreateDatabaseModal: (state) => {
+    toggleDatabaseCreateModal: (state) => {
       state.showCreateDatabaseModal = !state.showCreateDatabaseModal
     }
   },
@@ -61,6 +65,6 @@ export const getSelectedDatabase = (state) => state.persistedReducer.database.se
 export const isLoading = (state) => state.persistedReducer.database.isLoading
 export const showDatabaseCreateModal = (state) => state.persistedReducer.database.showCreateDatabaseModal
 
-export const { selectDatabase, showCreateDatabaseModal } = slice.actions
+export const { selectDatabase, toggleDatabaseCreateModal } = slice.actions
 
 export default slice.reducer

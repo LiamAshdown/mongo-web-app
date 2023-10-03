@@ -7,7 +7,8 @@ import DatabaseReducer from '@/app/store/slices/database'
 
 const persistConfig = {
   key: 'root',
-  storage
+  storage,
+  blacklist: ['database']
 }
 
 const rootReducer = combineReducers({

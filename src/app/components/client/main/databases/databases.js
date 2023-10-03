@@ -1,7 +1,7 @@
 import SubNav from '@/app/components/client/main/databases/sub-nav/sub-nav'
 import { List } from './list'
 import { useDispatch, useSelector } from 'react-redux'
-import { attachDatabases, getDatabases, isLoading, showDatabaseCreateModal } from '@/app/store/slices/database'
+import database, { attachDatabases, getDatabases, isLoading, showDatabaseCreateModal, toggleDatabaseCreateModal } from '@/app/store/slices/database'
 import { useEffect } from 'react'
 import { CreateDatabase } from '@/app/components/client/modals/create-database'
 
@@ -17,7 +17,8 @@ const Databases = () => {
   }, [dispatch])
 
   const onCancelCreateDataase = () => {
-    dispatch(showDatabaseCreateModal())
+    dispatch(toggleDatabaseCreateModal())
+    dispatch(attachDatabases())
   }
 
   return (

@@ -7,7 +7,11 @@ export async function GET(request) {
 
     // Test the connection
     const client = await initialiseClient(searchParams.get('connectionString'), true)
-    await client.db('admin').command({ ping: 1 })
+    const response = await client.db('admin').command({ ping: 1 })
+
+    if (!response.ok) {
+      throw new Error(`Connection failed with status ${response.status}`)
+    }
 
     return NextResponse.json({
       connectionString: searchParams.get('connectionString')

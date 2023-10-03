@@ -3,11 +3,14 @@ import { NextResponse } from 'next/server'
 
 export async function GET(request) {
   try {
+    console.log('hit')
     const { searchParams } = new URL(request.url)
     const client = await initialiseClient(searchParams.get('connectionString'))
 
     // Get the databases
     const databases = await client.db().admin().listDatabases()
+
+    console.log(databases)
 
     // Get the collection and the indexes
     for (const database of databases.databases) {

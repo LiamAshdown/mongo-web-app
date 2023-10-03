@@ -4,7 +4,7 @@ import Input from '@/app/components/client/inputs/input'
 import Form from '@/app/components/client/inputs/form'
 import FormGroup from '@/app/components/client/inputs/form-group'
 import Alert from '@/app/components/alert'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getSelectedConnection } from '@/app/store/slices/connection'
 import { useSelector } from 'react-redux'
 
@@ -14,6 +14,7 @@ export const CreateDatabase = ({ show, onClose }) => {
     collectionName: ''
   })
   const [errors, setErrors] = useState({})
+  const [error, setError] = useState(null)
   const selectedConnection = useSelector(getSelectedConnection)
   const [loading, setLoading] = useState(false)
 
@@ -32,6 +33,7 @@ export const CreateDatabase = ({ show, onClose }) => {
     }
 
     let formErrors = {}
+    setError(null)
 
     if (!form.databaseName) {
       formErrors = {
@@ -45,8 +47,6 @@ export const CreateDatabase = ({ show, onClose }) => {
         collectionName: 'Collection name is required'
       }
     }
-
-    console.log(formErrors)
 
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors)
@@ -67,13 +67,38 @@ export const CreateDatabase = ({ show, onClose }) => {
         }
       })
 
+      if (!response.ok) {
+        if (response.status === 422) {
+          const data = await response.json()
+          throw new Error(data.error)
+        } else {
+          throw new Error('Something went wrong. Please try again.')
+        }
+      }
+
+      // Database created successfully
+      // Close the modal
+      onClose()
+
     } catch (e) {
-      console.log(e)
+      if (e instanceof Error) {
+        setError(e.message)
+      } else {
+        setError('Something went wrong. Please try again.')
+      }
     } finally {
       setLoading(false)
     }
-
   }
+
+  useEffect(() => {
+    if (!show) {
+      setForm({
+        databaseName: '',
+        collectionName: ''
+      })
+    }
+  }, [show])
 
   return (
     <Modal title='Create Database' show={show} onClose={onClose} onAction={onSubmitHandler}>
@@ -97,6 +122,12 @@ export const CreateDatabase = ({ show, onClose }) => {
           />
         </FormGroup>
       </Form>
+
+      {error && (
+        <Alert className='mt-4' variant='danger'>
+          {error}
+        </Alert>
+      )}
 
       <Alert className='mt-4'>
         Before MongoDB can save your new database, a collection name must also be specified at the time of creation.
